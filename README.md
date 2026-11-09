@@ -1,7 +1,7 @@
 # harness-tidy 설치 (판: VERSION 파일 참고)
 
 ## 1. 받기
-- 이 저장소를 Skill 자리에 받는다: `git clone --branch v1.0.0 https://github.com/EaglingSun/harness-tidy.git {자리}`
+- 이 저장소를 Skill 자리에 받는다: `git clone --branch v1.1.0 https://github.com/EaglingSun/harness-tidy.git {자리}`
 - 개인 공통 (모든 프로젝트): `~/.claude/skills/harness-tidy/`
   - Windows: `%USERPROFILE%\.claude\skills\harness-tidy\`
 - 프로젝트 전용: `{프로젝트}/.claude/skills/harness-tidy/`
