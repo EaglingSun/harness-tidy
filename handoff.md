@@ -16,7 +16,7 @@ harness-tidy 는 규칙 ID 기반 **씨앗 케이스**만 만든다. 케이스 �
 | 전체 | inventory.py --changed-since · (선택) prompt-audit | 대상 하나를 머지한 뒤 | 회귀 점검: 먼저 스크립트로 바뀐 파일의 끊긴 참조·줄 초과를 보고, 모순 점검이 필요할 때만 prompt-audit |
 
 ## 넘기기 전 점검
-- [ ] evals.json — mapping.md 모든 행에 케이스 또는 `없음(사유)` (`inventory.py --coverage evals/{대상}` 이 100%)
+- [ ] evals.json — mapping.md 모든 행에 케이스 또는 `없음(사유)` (`inventory.py --coverage evals/{대상}` 이 exit 0 — 커버리지 100% · ID 없음 0 · 변경 유형 오류 0)
 - [ ] expected_output 에 [규칙 ID][매핑 행] (예: [DS-03][M07])
 - [ ] trigger-eval.json — 별도 파일, {query, should_trigger} 형식
 - [ ] lint/forbidden.txt 로 직접 검사한 결과를 먼저 보고 (lint 는 넘기지 않는다)

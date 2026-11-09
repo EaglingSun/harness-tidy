@@ -16,10 +16,10 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - HT-04 한 줄에 규칙이 여러 개면 나누고, 검사 방식·대상이 같은 규칙은 한 줄로 묶는다. 나누고 묶은 내역을 남긴다
 - HT-05 원본에 없는 규칙은 추가하지 않는다. 표현을 바꾸면 원문을 함께 남긴다
 - HT-06 매핑되지 않은 원본 문장은 [확인필요]로 표시하고 묻는다
-- HT-07 규칙은 ID({약어}-NN)를 붙인 한 줄 명령형. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …) 또는 why.md#{ID} 로 보존한다
+- HT-07 규칙(행동을 지시 · 금지하는 문장 — Rules 절 밖 · procedure.md · pitfalls.md 로 옮긴 것 포함)은 ID({약어}-NN)를 붙인 한 줄 명령형. 옮겨도 ID 는 그대로 둔다. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …) 또는 why.md#{ID} 로 보존한다
 - HT-08 정규식·카운트로 판정 가능한 규칙은 (lint), 나머지는 (judge)
 - HT-09 줄 수는 `python scripts/inventory.py --file {경로}` 의 본문 줄 수로 잰다. 상한: skill·agent·prompt 40 · CLAUDE.md 50 · rule 30. 넘으면 묶기 → 이동 → 외부 참조 순으로 줄인다
-- HT-10 Eval 씨앗은 정리본이 아니라 mapping.md 전체 행(유지·수정·묶음·이동·뺄)에서 만든다. 이동은 옮긴 곳이 로드되는 경로를 만지는 케이스, 뺄은 사유를 적고 필요 시 케이스. (lint) → forbidden.txt · (judge) → evals.json · 트리거 → trigger-eval.json. 커버리지는 inventory.py --coverage 로 확인한다
+- HT-10 Eval 씨앗은 정리본이 아니라 mapping.md 전체 행(유지·수정·묶음·이동·뺄)에서 만든다. 이동은 옮긴 곳이 로드되는 경로를 만지는 케이스, 뺄은 사유를 적고 필요 시 케이스. (lint) → forbidden.txt · (judge) → evals.json · 트리거 → trigger-eval.json. 커버리지 · 새 ID 는 inventory.py --coverage 로 확인하고 exit 0 일 때만 넘긴다
 - HT-11 한 번에 한 대상만 처리한다. 다른 대상과 규칙을 공유하면 상류(CLAUDE.md · rule)부터 정리하자고 제안한다
 - HT-12 Eval 실행·전후 비교·트리거 최적화·전체 점검은 handoff.md 대로 공식 기능에 넘긴다
 - HT-13 넘기기 전에 승인을 받는다. 넘길 기능이 없으면 설치 안내와 넘김 프롬프트만 출력하고 멈춘다

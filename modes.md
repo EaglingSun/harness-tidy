@@ -22,6 +22,7 @@ inventory 를 뺀 모든 모드는 1단계(검토 문서) → 결정 → 2단계
 4. 규칙마다 placement.md 로 자리를 정한다. rule 로 갈 규칙은 "rule 이동 후보"로 표시하고 그 rule 을 먼저 정리하자고 제안한다
 5. 스킬이 경로 rule 에 기대면 Procedure 1 을 "대상 파일을 먼저 읽는다"로 둔다
 6. commands/ 파일은 skills/{이름}/SKILL.md 로 옮기자고 제안한다 (같은 이름이면 skill 이 이긴다)
+6-1. procedure.md · pitfalls.md 로 옮긴 규칙도 같은 ID 를 붙인다. Procedure · Output · Don't 의 지시 · 금지 문장도 규칙이다 (HT-07)
 7. 결정 반영 → 정리본 · 매핑표 · 줄 수 · [확인필요] 보고 → handoff(skill-creator)
 
 ## Mode: agent (.claude/agents/{이름}.md)
@@ -29,7 +30,7 @@ inventory 를 뺀 모든 모드는 1단계(검토 문서) → 결정 → 2단계
 2. frontmatter 필드명은 정확히 쓴다 (오타는 조용히 무시된다)
 3. 본문에 스킬 내용이 복사돼 있으면 `skills:` preload 로 바꾸자고 제안한다 (HT-15)
 4. CLAUDE.md 는 에이전트에도 기본 로드된다(omitClaudeMd 제외) → CLAUDE.md 와 겹치는 규칙은 뺀다
-5. 구조: templates/agent.md
+5. 구조: templates/agent.md. Procedure · Output · Don't 의 지시 · 금지 문장도 ID 를 붙인다 (HT-07)
 6. Eval: 위임 → trigger-eval.json (should_trigger = 자동 위임 여부) · 동작 → evals.json (prompt 에 `@"{이름} (agent)"` 로 명시 호출)
 7. 결정 반영 → 정리본 · 매핑표 · 줄 수 → handoff(/doctor prompt-audit, Eval 실행)
 

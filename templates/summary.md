@@ -21,6 +21,7 @@
 본문 {전}줄 → {후}줄 · 규칙 {n}개 (lint {n} · judge {n})
 .bak  {경로}.bak
 매핑  evals/{대상}/mapping.md  (유지 {n} · 수정 {n} · 묶음 {n} · 이동 {n} · 뺄 {n})
+ID    ID 없음 {n} · 변경 유형 오류 {n}  (inventory.py --coverage, 0 이 아니면 넘기지 않는다)
 lint  {위반 n건 / 통과}
 Eval  evals/{대상}/evals.json {n}건 · trigger-eval.json {n}건 · 커버리지 매핑 {n}행 중 {n}행 (나머지 사유 {n})
 다음  재기: {넘김 프롬프트 한 줄} — 승인할까요?

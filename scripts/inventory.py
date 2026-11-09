@@ -26,6 +26,8 @@ ID_RE = re.compile(r"^\s*-\s*([A-Z]{1,6})-(\d{2,3})\b", re.M)
 REF_RE = re.compile(r"(?<![\w`])@([~\w./\\-]+\.\w+)")
 QUOTE_RE = re.compile(r"[「“\"]([^」”\"\n]{2,30})[」”\"]")
 PATHLIKE_RE = re.compile(r"[\w.\-*]+/[\w.\-*/]+|[\w\-]+\.(?:js|ts|py|md|json|ps1|docx|pptx)\b")
+ID_CELL_RE = re.compile(r"^[A-Z]{1,6}-\d{2,3}(\s*[,·]\s*[A-Z]{1,6}-\d{2,3})*$")
+CHANGE_KINDS = ("유지", "수정", "묶음", "이동", "뺄")
 
 
 def read(p):
@@ -272,10 +274,16 @@ def coverage(evals_dir):
     idcol = next((h for h in (header or []) if "새 ID" in h), None)
     rowcol = next((h for h in (header or []) if h == "행"), None)
     kindcol = next((h for h in (header or []) if "변경 유형" in h), None)
-    result = {"mapping_rows": len(rows), "covered": 0, "excused": 0, "missing": [], "broken_ids": [], "mode": "rc.2" if col else "rc.1-fallback"}
+    result = {"mapping_rows": len(rows), "covered": 0, "excused": 0, "missing": [], "broken_ids": [],
+              "no_id": [], "bad_kind": [], "mode": "rc.2" if col else "rc.1-fallback"}
     for r in rows:
         label = r.get(rowcol) or r.get(idcol) or "?"
         kind = r.get(kindcol, "")
+        rid = r.get(idcol, "") if idcol else ""
+        if idcol and not (ID_CELL_RE.match(rid) or rid.startswith("없음(사유")):
+            result["no_id"].append(f"{label} ({kind})")
+        if kindcol and kind not in CHANGE_KINDS:
+            result["bad_kind"].append(f"{label} ({kind})")
         if col:
             val = r.get(col, "")
             if val.startswith("없음"):
@@ -291,7 +299,6 @@ def coverage(evals_dir):
             else:
                 result["covered"] += 1
         else:
-            rid = r.get(idcol, "")
             if rid and rid not in ("—", "-") and rid in tagged:
                 result["covered"] += 1
             else:
@@ -299,6 +306,12 @@ def coverage(evals_dir):
     n = result["mapping_rows"]
     result["coverage_pct"] = round(100 * (result["covered"] + result["excused"]) / n, 1) if n else 0.0
     return result
+
+
+def coverage_ok(c):
+    """넘김(HT-13) 가능 여부: 커버리지 100% · 깨진 id 0 · ID 없음 0 · 변경 유형 오류 0."""
+    return (c.get("coverage_pct") == 100.0 and not c.get("broken_ids")
+            and not c.get("no_id") and not c.get("bad_kind"))
 
 
 def to_markdown(rows, settings, conflicts, near_result, changed_only):
@@ -358,11 +371,16 @@ def main():
             print(json.dumps(c, ensure_ascii=False, indent=2))
         else:
             print(f"커버리지 {c['coverage_pct']}%  (매핑 {c['mapping_rows']}행 · 케이스 {c['covered']} · 사유 {c['excused']} · 누락 {len(c['missing'])} · 깨진 id {len(c['broken_ids'])})  [{c['mode']}]")
+            print(f"새 ID  ID 없음 {len(c['no_id'])} · 변경 유형 오류 {len(c['bad_kind'])}  (새 ID 칸: ID 또는 '없음(사유: …)' · 유형: {' · '.join(CHANGE_KINDS)})")
             for m in c["missing"]:
                 print(f"  누락  {m}")
             for b in c["broken_ids"]:
                 print(f"  깨짐  {b}")
-        sys.exit(0 if c.get("coverage_pct") == 100.0 and not c.get("broken_ids") else 1)
+            for m in c["no_id"]:
+                print(f"  ID 없음  {m}")
+            for m in c["bad_kind"]:
+                print(f"  유형 오류  {m}")
+        sys.exit(0 if coverage_ok(c) else 1)
     if a.file:
         fp = Path(a.root) / a.file
         text = read(fp)

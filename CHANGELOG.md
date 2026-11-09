@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.1.0
+- HT-07 변경: 규칙 = 행동을 지시 · 금지하는 문장. Rules 절 밖(Procedure · Output · Don't)과 procedure.md · pitfalls.md 로 옮긴 규칙에도 ID 를 붙이고, 옮겨도 ID 는 그대로 둔다
+- templates/mapping.md: 이동 예시가 새 ID 를 `—` 로 비우던 것을 고침. 새 ID 칸은 ID 또는 `없음(사유: …)` (빈칸 · `—` 금지), 변경 유형은 다섯 가지만
+- inventory.py --coverage: 새 ID 없는 행(「ID 없음」)과 다섯 가지 밖 변경 유형(「유형 오류」)을 표시하고 exit 1. 1.0.0 매핑표의 `—` 행은 이제 실패로 나온다 → `없음(사유: …)` 나 ID 로 고친다
+- HT-10: --coverage 가 exit 0 일 때만 넘긴다 · 2단계 요약에 ID 줄 추가 · tests/test_coverage.py 추가
+
 ## 1.0.0
 - 첫 공개판. 규칙(HT-01~18) · 모드 · 템플릿은 1.0.0-rc.2 와 같다. 이후 1.0.x 는 문서 오타만 고친다
 - MIT 라이선스 추가

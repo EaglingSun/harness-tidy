@@ -41,7 +41,7 @@ python .../inventory.py --include-user --memory <MEMORY.md 경로>              
 python .../inventory.py --near .claude/skills/deck-script/SKILL.md           # L1 대상 주변 후보
 python .../inventory.py --changed-since main                                 # 증분
 python .../inventory.py --out docs/reports/<날짜>-harness-tidy/inventory.md  # 파일로 저장
-python .../inventory.py --coverage evals/deck-script                         # 매핑 행 대비 Eval 커버리지 (100% 아니면 exit 1)
+python .../inventory.py --coverage evals/deck-script                         # 매핑 행 대비 Eval 커버리지 · 새 ID · 변경 유형 (하나라도 어긋나면 exit 1)
 ```
 - 잡는 것: 줄 초과 · ID 유무 · 긴 줄(줄글) 비율 · agent tools 생략 · description 없음 · 끊긴 @참조 · skill/command 이름 충돌 · commands 이전 후보 · MEMORY 한도 · hooks/permissions/MCP 목록
 - 비용 단계: L0 스크립트(기본) → L1 대상 주변(정리 때) → L2 전체 의미 비교(prompt-audit, 요청·정기 점검 때만)
