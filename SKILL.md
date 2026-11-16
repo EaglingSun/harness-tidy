@@ -1,6 +1,6 @@
 ---
 name: harness-tidy
-description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · subagents · output styles · auto memory · 그 밖의 지시 파일)를 인벤토리로 훑고, 대상별로 템플릿 기준 압축·배치 정리를 한 뒤 Eval·점검은 공식 기능으로 넘긴다. "하네스 정리", "하네스 인벤토리", "{스킬명} 정리해줘", "에이전트 정리해줘", "리뷰어 프롬프트 정리해줘", "CLAUDE.md 정리해줘", "rules 정리해줘", "규칙 압축" 요청 시 사용. 새 스킬 작성·Eval 실행 자체는 skill-creator.
+description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · subagents · output styles · auto memory · 그 밖의 지시 파일)를 인벤토리로 훑고, 대상별로 템플릿 기준 압축·배치 정리를 한 뒤 Eval·점검은 공식 기능으로 넘긴다. "하네스 정리", "하네스 인벤토리", "{스킬명} 정리해줘", "에이전트 정리해줘", "리뷰어 프롬프트 정리해줘", "CLAUDE.md 정리해줘", "rules 정리해줘", "규칙 압축", "기준 추가해줘", "규칙 추가해줘", "기준 문서화", "규칙 문서화", "이 규칙 어디에 넣지", "CLAUDE.md 에 규칙 추가" 요청 시 사용. 하네스 파일(CLAUDE.md · rules · skills · hooks · subagents)에 기준이나 규칙을 새로 넣거나 바꿀 때도 먼저 인벤토리로 중복 · 충돌 · 배치 위치를 확인한다. 새 스킬 작성·Eval 실행 자체는 skill-creator.
 ---
 
 # harness-tidy (판: VERSION 파일)
