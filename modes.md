@@ -15,6 +15,16 @@ inventory 를 뺀 모든 모드는 1단계(검토 문서) → 결정 → 2단계
 6. 결과: docs/reports/{날짜}-harness-tidy/inventory.md. 어떤 대상 파일도 고치지 않는다
 7. 다음 인벤토리는 `--changed-since {이번 커밋}` 으로 증분만 본다
 
+## Mode: add (새 기준·규칙 추가 — "기준 추가해줘" · "규칙 추가해줘" · "이 규칙 어디에 넣지")
+기존 파일을 정리하는 모드가 아니다. 사용자가 요청한 신규 규칙을 알맞은 자리에 넣는다 (HT-19). 정리 중 임의 추가 금지(HT-05)와 다르다
+1. 규칙 원문을 사용자 표현 그대로 받는다. 대상 파일이 이미 정해져 있어도 3~5 를 거친다
+2. `python scripts/inventory.py --near {후보 파일}` 로 주변 후보(L1)만 읽고, 같은 · 비슷한 규칙이 이미 있는지 찾는다 (HT-14). 전체 인벤토리는 대상 후보가 없을 때만 돌린다
+3. placement.md 표로 둘 곳을 정한다. 범위는 전역 · 프로젝트로 나눈다: 여러 프로젝트가 공유하면 전역(~/.claude/), 한 프로젝트만 쓰면 프로젝트(.claude/). 레포 룰이 전역과 충돌하면 레포 룰이 이기므로 충돌을 먼저 적는다
+4. 이미 같은 맥락에서 자동 로드되는 곳에 있으면 새로 넣지 않는다. 그 규칙 소관 파일과 줄을 알려 주고 보강할지 묻는다 (HT-15)
+5. 제안을 낸다: 파일:줄 · 넣을 문안(HT-07 형식: ID 한 줄 명령형 · 이유 · lint/judge) · 넣지 않고 hook 으로 갈 후보 여부(HT-16) · 줄 수 상한(HT-09) 초과 여부
+6. 승인 뒤에만 고친다. 수정 전 {파일}.bak(HT-01). 반영 뒤 줄 수 · 상류(CLAUDE.md · rule)를 바꿨으면 하류 skill · agent 영향을 보고한다
+7. 매핑표(evals/…/mapping.md)와 --coverage 는 만들지 않는다. 정리 전후 ID 대조용이다
+
 ## Mode: skill (.claude/skills/{이름}/SKILL.md · .claude/commands/{이름}.md)
 1. 진단: 줄 수 · description 혼재 · ID 유무 · 다중 규칙 줄 · 중복 · lint 후보 · 바깥 중복(HT-14, `inventory.py --near {SKILL.md}`)
 2. 결과 구조: SKILL.md / procedure.md / pitfalls.md / why.md / lint/forbidden.txt

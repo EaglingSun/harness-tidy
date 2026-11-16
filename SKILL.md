@@ -14,7 +14,7 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - HT-02 1단계는 대상 파일을 고치지 않고 검토 문서(templates/review.md)만 쓴다. 결정 칸(유지·수정·뺄)을 받은 뒤 2단계로 간다
 - HT-03 원본 줄 번호는 Grep 도구(줄 번호 출력) 결과로만 적고 원문 인용을 함께 둔다. 셸 명령(grep -n 등)에 기대지 않는다
 - HT-04 한 줄에 규칙이 여러 개면 나누고, 검사 방식·대상이 같은 규칙은 한 줄로 묶는다. 나누고 묶은 내역을 남긴다
-- HT-05 원본에 없는 규칙은 추가하지 않는다. 표현을 바꾸면 원문을 함께 남긴다
+- HT-05 정리 중에는 원본에 없는 규칙을 추가하지 않는다. 표현을 바꾸면 원문을 함께 남긴다. 사용자가 요청한 신규 규칙은 add 모드(HT-19)로 다룬다
 - HT-06 매핑되지 않은 원본 문장은 [확인필요]로 표시하고 묻는다
 - HT-07 규칙(행동을 지시 · 금지하는 문장 — Rules 절 밖 · procedure.md · pitfalls.md 로 옮긴 것 포함)은 ID({약어}-NN)를 붙인 한 줄 명령형. 옮겨도 ID 는 그대로 둔다. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …) 또는 why.md#{ID} 로 보존한다
 - HT-08 정규식·카운트로 판정 가능한 규칙은 (lint), 나머지는 (judge)
@@ -28,16 +28,17 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - HT-16 매번 반드시 지켜져야 하는 (lint) 규칙은 hook 전환 후보로 표시한다 (지시는 요청일 뿐 보장이 아니다)
 - HT-17 화면 출력은 단계마다 20줄 이내 요약(templates/summary.md)이다. 결정이 필요한 항목만 나열하고 유지는 개수만, 전체 표는 파일로 둔다
 - HT-18 매핑표는 evals/{대상}/mapping.md 에 저장하고, 행마다 변경 유형(유지·수정·묶음·이동·뺄)을 적는다. 뺄·묶음 행도 지우지 않는다
+- HT-19 사용자가 새 기준·규칙을 넣어 달라고 하면 add 모드로 처리한다. 인벤토리 → placement.md 배치 판정(전역·프로젝트 포함) → 중복·충돌 확인(HT-15) → 파일·줄·문안 제안 → 승인 뒤 반영. 승인 전에는 대상 파일을 고치지 않는다
 
 ## Modes (상세: modes.md)
-- inventory(L0 스크립트) · skill · agent · prompt · claude-md · rules · style · memory — 대상 종류로 고른다
+- inventory(L0 스크립트) · add(새 규칙 추가) · skill · agent · prompt · claude-md · rules · style · memory — 대상 종류로 고른다. 새 규칙을 넣는 요청이면 add 를 먼저 쓴다
 
 ## Output
 - 화면: templates/summary.md 형식 (HT-17)
 - 파일: docs/reports/{날짜}-harness-tidy/{약어}-규칙-검토.md · evals/{대상}/mapping.md · 정리본 · Eval 씨앗
 
 ## Don't
-- 승인 전 대상 수정 · .bak 없는 덮어쓰기 · 원본에 없는 규칙 추가 · 기억으로 줄 번호 쓰기 · Eval 실행기 신규 작성
+- 승인 전 대상 수정 · .bak 없는 덮어쓰기 · 정리 중 원본에 없는 규칙 추가(HT-05, 사용자 요청 규칙은 HT-19) · 기억으로 줄 번호 쓰기 · Eval 실행기 신규 작성
 
 ## Refs
 - modes.md · placement.md · handoff.md · templates/ · scripts/inventory.py · VERSION · CHANGELOG.md

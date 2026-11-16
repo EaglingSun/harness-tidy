@@ -1,7 +1,7 @@
 # harness-tidy 설치 (판: VERSION 파일 참고)
 
 ## 1. 받기
-- 이 저장소를 Skill 자리에 받는다: `git clone --branch v1.1.1 https://github.com/EaglingSun/harness-tidy.git {자리}`
+- 이 저장소를 Skill 자리에 받는다: `git clone --branch v1.2.0 https://github.com/EaglingSun/harness-tidy.git {자리}`
 - 개인 공통 (모든 프로젝트): `~/.claude/skills/harness-tidy/`
   - Windows: `%USERPROFILE%\.claude\skills\harness-tidy\`
 - 프로젝트 전용: `{프로젝트}/.claude/skills/harness-tidy/`
@@ -24,6 +24,7 @@
 | 요청 | 모드 | 1단계 결과 |
 |---|---|---|
 | "하네스 정리" · "하네스 인벤토리" | inventory | 전체 목록 · 공유 관계 · Top 3 · 순서 |
+| "기준 추가해줘" · "규칙 추가해줘" · "이 규칙 어디에 넣지" | add | 배치 제안(파일:줄 · 문안) · 중복·충돌 · 승인 뒤 반영 |
 | "{스킬명} 정리해줘" | skill | 검토 문서 · rule 이동 후보 |
 | "{에이전트명} 에이전트 정리해줘" | agent | 검토 문서 · tools · skills preload 제안 |
 | "CLAUDE.md 정리해줘" | claude-md | 검토 문서 · 이동 분류 |
@@ -57,10 +58,10 @@ python .../inventory.py --coverage evals/deck-script                         # �
 - 판 확인: `python scripts/inventory.py --version`
 
 ## 파일
-- SKILL.md — 규칙 HT-01~18
+- SKILL.md — 규칙 HT-01~19
 - VERSION · CHANGELOG.md — 판과 변경 이력
 - scripts/inventory.py — L0 목록 · L1 대상 주변 후보 · 증분
-- modes.md — inventory · skill · agent · prompt · claude-md · rules · style · memory 모드 절차
+- modes.md — inventory · add · skill · agent · prompt · claude-md · rules · style · memory 모드 절차
 - placement.md — 규칙을 둘 곳 (hook · CLAUDE.md · rule · style · skill · agent · MCP), 로드 판정, 중복 처리
 - handoff.md — 공식 기능(skill-creator · claude-md-improver · /doctor prompt-audit)으로 넘기는 절차
 - templates/ — summary(화면 요약) · mapping(매핑표) · review(검토 문서) · 규칙 포맷 · skill · agent · CLAUDE.md · 종료 리포트 · 구조 · why.md · evals.json(judge) · trigger-eval.json(트리거·위임) · hook
