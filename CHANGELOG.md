@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.4.0
+- inventory: `/skill-doctor` 사용 데이터(사용 횟수 · 마지막 사용 · 컨텍스트 비용)를 skill-usage.txt 로 저장해 Top 3 근거로 쓴다. 로드됐지만 안 쓴 skill 은 정리 대상이 아니라 「끄기 후보」로 따로 적는다. 실행할 수 없으면 「사용 데이터 없음」. Windows Git Bash 는 `MSYS_NO_PATHCONV=1` 이 있어야 `/skill-doctor` 가 경로로 바뀌지 않는다(실행 확인)
+- 정리 모드 공통: 사용자가 `/doctor prompt-audit {대상}` 을 돌렸으면 지적을 1단계 검토 문서 [확인필요]로 받는다. harness-tidy 기준과 어긋나면 둘 다 적어 묻는다. HT-12 에 「공식 점검 결과는 다시 만들지 않고 1단계 입력으로 받는다」 한 구절
+- claude-md 넘김: 내장 `/doctor`(Check 2~4)를 먼저 쓰고 claude-md-improver 는 설치된 경우 선택으로. handoff.md 에 `/doctor` 는 모델이 부를 수 없다는 점 · `/skill-doctor` 안내 추가
+- 공식 대응: 있음 — 미사용 판정은 `/skill-doctor` · `/doctor` Check 1, CLAUDE.md 다듬기는 `/doctor` Check 3 · 4, 구식 · 모순은 `/doctor prompt-audit`. 이 판은 그 결과를 읽어 쓰는 단계만 넣고 판정 기능은 새로 만들지 않았다
+- 스크립트 · 시험은 1.3.1 과 같다
+
 ## 1.3.1
 - triage(HT-20): 스크립트의 `충돌?` 힌트를 없앴다. 유사도 + 부정어 유무로 정한 충돌 힌트는 실제 하네스에서 오탐이 많았고, 같은 일을 `/doctor prompt-audit`(Group 2 지시 파일 간 모순)이 override · 신구 판정까지 넣어 한다. 극성이 다른 쌍은 이제 힌트를 달지 않는다(`중복?` 으로 바꿔 부르지 않는다)
 - 공식 대응: 있음 — 충돌 판정은 `/doctor prompt-audit` 결과를 triage 표의 `충돌` 태그로 옮긴다(modes.md triage 1-1). 못 쓰면 요약에 「충돌 점검 안 함」
