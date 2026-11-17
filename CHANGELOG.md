@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.3.0
+- HT-20 추가 · modes.md 에 triage 모드(규칙 전수 표): `inventory.py --rules` 가 하네스 전체를 규칙 한 줄 = 1행(R001…)으로 뽑고 힌트(중복? · 충돌? · 일회성? · 모호 · 용어)를 단다. 태그(기준 · 일회성 · 중복 · 충돌 · 모호)와 결정(유지 · 수정 · 묶음 · 이동 · 뺄)을 받고 `--triage-check` exit 0 뒤 대상별 모드로 넘긴다. 대상별 검토 문서 결정 칸은 triage 결정으로 미리 채운다
+- HT-21 추가 · templates/cold-read.md: 2단계 정리본을 정리 맥락 없는 서브에이전트에 주고 (judge) 규칙마다 해석 · 경계 사례를 받아 원문 · why 와 대조. 어긋남 · 모호 0 일 때만 넘긴다
+- HT-22 추가 · templates/glossary.md: 용어집(.claude/glossary.md → ~/.claude/glossary.md)을 따르고 `inventory.py --terms` exit 0 일 때만 넘긴다
+- HT-07 변경: 예외도 (예외: …) 또는 why.md#{ID} 로 보존. templates/rule-format.md 에 예외 · 용어 절, 금지어에 「필요하면」 · 「알아서」 추가
+- SKILL.md 본문 40줄 유지: Input 두 줄 · Output 두 줄을 각각 한 줄로 묶음 (규칙 내용 변경 없음)
+- summary.md 에 triage 요약 · 2단계 요약에 용어 · 콜드 줄, handoff.md 점검 목록에 콜드 리드 · 용어 추가
+- tests/test_rules.py 추가. 기존 HT-01~19 · --coverage 동작은 1.2.0 과 같다
+
 ## 1.2.0
 - HT-19 추가 · modes.md 에 add 모드(새 기준·규칙 추가): 인벤토리 → placement 배치 판정 → 중복·충돌 확인 → 제안 → 승인 뒤 반영. 「기준 추가해줘」 · 「규칙 추가해줘」 트리거가 이 절차로 이어진다
 - HT-05 변경: 「정리 중」 임의 추가 금지로 좁히고, 사용자가 요청한 신규 규칙은 add 모드(HT-19)로 다룬다
