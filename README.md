@@ -1,7 +1,7 @@
 # harness-tidy 설치 (판: VERSION 파일 참고)
 
 ## 1. 받기
-- 이 저장소를 Skill 자리에 받는다: `git clone --branch v1.2.0 https://github.com/EaglingSun/harness-tidy.git {자리}`
+- 이 저장소를 Skill 자리에 받는다: `git clone --branch v1.3.0 https://github.com/EaglingSun/harness-tidy.git {자리}`
 - 개인 공통 (모든 프로젝트): `~/.claude/skills/harness-tidy/`
   - Windows: `%USERPROFILE%\.claude\skills\harness-tidy\`
 - 프로젝트 전용: `{프로젝트}/.claude/skills/harness-tidy/`
@@ -24,6 +24,7 @@
 | 요청 | 모드 | 1단계 결과 |
 |---|---|---|
 | "하네스 정리" · "하네스 인벤토리" | inventory | 전체 목록 · 공유 관계 · Top 3 · 순서 |
+| "규칙 전수 정리" · "전역 규칙 정리" · "규칙이 너무 많아" | triage | 규칙 한 줄 단위 표 · 태그(기준·일회성·중복·충돌·모호) · 결정 → 대상별 순서 |
 | "기준 추가해줘" · "규칙 추가해줘" · "이 규칙 어디에 넣지" | add | 배치 제안(파일:줄 · 문안) · 중복·충돌 · 승인 뒤 반영 |
 | "{스킬명} 정리해줘" | skill | 검토 문서 · rule 이동 후보 |
 | "{에이전트명} 에이전트 정리해줘" | agent | 검토 문서 · tools · skills preload 제안 |
@@ -33,7 +34,7 @@
 | "출력 스타일 정리해줘" | style | 검토 문서 · 이동 분류 |
 | "메모리 정리해줘" | memory | 승격 후보 표 (읽기 전용) |
 
-- 처음이면 inventory 부터. 규칙을 공유하는 대상이 여럿이면 상류(CLAUDE.md · rule)부터
+- 처음이면 inventory 부터. 규칙이 수십 개 쌓여 어디부터 볼지 모르겠으면 triage 부터. 규칙을 공유하는 대상이 여럿이면 상류(CLAUDE.md · rule)부터
 
 ## 5. 인벤토리 스크립트 (Python 3.8+, 표준 라이브러리만)
 ```bash
@@ -43,6 +44,9 @@ python .../inventory.py --near .claude/skills/deck-script/SKILL.md           # L
 python .../inventory.py --changed-since main                                 # 증분
 python .../inventory.py --out docs/reports/<날짜>-harness-tidy/inventory.md  # 파일로 저장
 python .../inventory.py --coverage evals/deck-script                         # 매핑 행 대비 Eval 커버리지 · 새 ID · 변경 유형 (하나라도 어긋나면 exit 1)
+python .../inventory.py --rules --include-user --out docs/reports/<날짜>-harness-tidy/rules-triage.md   # triage 표
+python .../inventory.py --triage-check docs/reports/<날짜>-harness-tidy/rules-triage.md   # 태그 · 결정 확정 여부 (미확정이면 exit 1)
+python .../inventory.py --terms .claude/skills/deck-script/SKILL.md          # 용어집 위반 (위반이면 exit 1)
 ```
 - 잡는 것: 줄 초과 · ID 유무 · 긴 줄(줄글) 비율 · agent tools 생략 · description 없음 · 끊긴 @참조 · skill/command 이름 충돌 · commands 이전 후보 · MEMORY 한도 · hooks/permissions/MCP 목록
 - 비용 단계: L0 스크립트(기본) → L1 대상 주변(정리 때) → L2 전체 의미 비교(prompt-audit, 요청·정기 점검 때만)
@@ -58,10 +62,10 @@ python .../inventory.py --coverage evals/deck-script                         # �
 - 판 확인: `python scripts/inventory.py --version`
 
 ## 파일
-- SKILL.md — 규칙 HT-01~19
+- SKILL.md — 규칙 HT-01~22
 - VERSION · CHANGELOG.md — 판과 변경 이력
-- scripts/inventory.py — L0 목록 · L1 대상 주변 후보 · 증분
-- modes.md — inventory · add · skill · agent · prompt · claude-md · rules · style · memory 모드 절차
+- scripts/inventory.py — L0 목록 · L1 대상 주변 후보 · 증분 · triage 표(--rules · --triage-check) · 용어 lint(--terms)
+- modes.md — inventory · triage · add · skill · agent · prompt · claude-md · rules · style · memory 모드 절차
 - placement.md — 규칙을 둘 곳 (hook · CLAUDE.md · rule · style · skill · agent · MCP), 로드 판정, 중복 처리
 - handoff.md — 공식 기능(skill-creator · claude-md-improver · /doctor prompt-audit)으로 넘기는 절차
-- templates/ — summary(화면 요약) · mapping(매핑표) · review(검토 문서) · 규칙 포맷 · skill · agent · CLAUDE.md · 종료 리포트 · 구조 · why.md · evals.json(judge) · trigger-eval.json(트리거·위임) · hook
+- templates/ — summary(화면 요약) · mapping(매핑표) · review(검토 문서) · 규칙 포맷 · skill · agent · CLAUDE.md · 종료 리포트 · 구조 · why.md · evals.json(judge) · trigger-eval.json(트리거·위임) · hook · glossary(용어집) · cold-read(콜드 리드)

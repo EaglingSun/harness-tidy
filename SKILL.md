@@ -1,13 +1,12 @@
 ---
 name: harness-tidy
-description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · subagents · output styles · auto memory · 그 밖의 지시 파일)를 인벤토리로 훑고, 대상별로 템플릿 기준 압축·배치 정리를 한 뒤 Eval·점검은 공식 기능으로 넘긴다. "하네스 정리", "하네스 인벤토리", "{스킬명} 정리해줘", "에이전트 정리해줘", "리뷰어 프롬프트 정리해줘", "CLAUDE.md 정리해줘", "rules 정리해줘", "규칙 압축", "기준 추가해줘", "규칙 추가해줘", "기준 문서화", "규칙 문서화", "이 규칙 어디에 넣지", "CLAUDE.md 에 규칙 추가" 요청 시 사용. 하네스 파일(CLAUDE.md · rules · skills · hooks · subagents)에 기준이나 규칙을 새로 넣거나 바꿀 때도 먼저 인벤토리로 중복 · 충돌 · 배치 위치를 확인한다. 새 스킬 작성·Eval 실행 자체는 skill-creator.
+description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · subagents · output styles · auto memory · 그 밖의 지시 파일)를 인벤토리로 훑고, 대상별로 템플릿 기준 압축·배치 정리를 한 뒤 Eval·점검은 공식 기능으로 넘긴다. "하네스 정리", "하네스 인벤토리", "{스킬명} 정리해줘", "에이전트 정리해줘", "리뷰어 프롬프트 정리해줘", "CLAUDE.md 정리해줘", "rules 정리해줘", "규칙 압축", "규칙 전수 정리", "전역 규칙 정리", "규칙이 너무 많아", "기준 추가해줘", "규칙 추가해줘", "기준 문서화", "규칙 문서화", "이 규칙 어디에 넣지", "CLAUDE.md 에 규칙 추가" 요청 시 사용. 하네스 파일(CLAUDE.md · rules · skills · hooks · subagents)에 기준이나 규칙을 새로 넣거나 바꿀 때도 먼저 인벤토리로 중복 · 충돌 · 배치 위치를 확인한다. 새 스킬 작성·Eval 실행 자체는 skill-creator.
 ---
 
 # harness-tidy (판: VERSION 파일)
 
 ## Input
-- 대상: CLAUDE.md · rule · skill(command 포함) · agent · output style · auto memory · 그 밖의 지시 파일(예: harness/reviewer.md). 없으면 inventory
-- 템플릿: 프로젝트 .claude/templates/ 우선, 없으면 이 스킬의 templates/
+- 대상: CLAUDE.md · rule · skill(command 포함) · agent · output style · auto memory · 그 밖의 지시 파일(예: harness/reviewer.md). 없으면 inventory · 템플릿: 프로젝트 .claude/templates/ → 이 스킬의 templates/ · 용어집: .claude/glossary.md → ~/.claude/glossary.md (없으면 HT-22 생략)
 
 ## Rules
 - HT-01 수정 전에 원본을 {파일}.bak 으로 복사한다 (확장자는 맨 끝: SKILL.md.bak. .bak.md 는 다시 로드되므로 금지)
@@ -16,7 +15,7 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - HT-04 한 줄에 규칙이 여러 개면 나누고, 검사 방식·대상이 같은 규칙은 한 줄로 묶는다. 나누고 묶은 내역을 남긴다
 - HT-05 정리 중에는 원본에 없는 규칙을 추가하지 않는다. 표현을 바꾸면 원문을 함께 남긴다. 사용자가 요청한 신규 규칙은 add 모드(HT-19)로 다룬다
 - HT-06 매핑되지 않은 원본 문장은 [확인필요]로 표시하고 묻는다
-- HT-07 규칙(행동을 지시 · 금지하는 문장 — Rules 절 밖 · procedure.md · pitfalls.md 로 옮긴 것 포함)은 ID({약어}-NN)를 붙인 한 줄 명령형. 옮겨도 ID 는 그대로 둔다. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …) 또는 why.md#{ID} 로 보존한다
+- HT-07 규칙(행동을 지시 · 금지하는 문장 — Rules 절 밖 · procedure.md · pitfalls.md 로 옮긴 것 포함)은 ID({약어}-NN)를 붙인 한 줄 명령형. 옮겨도 ID 는 그대로 둔다. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …), 예외는 (예외: …) 또는 why.md#{ID} 로 보존한다
 - HT-08 정규식·카운트로 판정 가능한 규칙은 (lint), 나머지는 (judge)
 - HT-09 줄 수는 `python scripts/inventory.py --file {경로}` 의 본문 줄 수로 잰다. 상한: skill·agent·prompt 40 · CLAUDE.md 50 · rule 30. 넘으면 묶기 → 이동 → 외부 참조 순으로 줄인다
 - HT-10 Eval 씨앗은 정리본이 아니라 mapping.md 전체 행(유지·수정·묶음·이동·뺄)에서 만든다. 이동은 옮긴 곳이 로드되는 경로를 만지는 케이스, 뺄은 사유를 적고 필요 시 케이스. (lint) → forbidden.txt · (judge) → evals.json · 트리거 → trigger-eval.json. 커버리지 · 새 ID 는 inventory.py --coverage 로 확인하고 exit 0 일 때만 넘긴다
@@ -29,13 +28,15 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - HT-17 화면 출력은 단계마다 20줄 이내 요약(templates/summary.md)이다. 결정이 필요한 항목만 나열하고 유지는 개수만, 전체 표는 파일로 둔다
 - HT-18 매핑표는 evals/{대상}/mapping.md 에 저장하고, 행마다 변경 유형(유지·수정·묶음·이동·뺄)을 적는다. 뺄·묶음 행도 지우지 않는다
 - HT-19 사용자가 새 기준·규칙을 넣어 달라고 하면 add 모드로 처리한다. 인벤토리 → placement.md 배치 판정(전역·프로젝트 포함) → 중복·충돌 확인(HT-15) → 파일·줄·문안 제안 → 승인 뒤 반영. 승인 전에는 대상 파일을 고치지 않는다
+- HT-20 규칙이 많아 대상을 고르기 어렵거나 전역 규칙을 한꺼번에 정리하려면 triage 모드로 `inventory.py --rules` 표(규칙 한 줄 = 1행)를 만들고, 태그(기준·일회성·중복·충돌·모호)와 결정을 받는다. `--triage-check` 가 exit 0 이면 상류부터 대상별 모드로 넘긴다. triage 중에는 어떤 파일도 고치지 않는다
+- HT-21 2단계 정리본은 정리 맥락이 없는 서브에이전트에 정리본만 주고 규칙마다 해석 · 경계 사례를 받는다(templates/cold-read.md). 원문 · why 와 어긋나면 [확인필요]로 되돌리고, 어긋남 0 일 때만 넘긴다 (judge)
+- HT-22 정리본 · add 문안의 용어는 용어집을 따르고 `inventory.py --terms {파일}` 이 exit 0 일 때만 넘긴다. 용어집에 없는 새 용어는 만들지 않고 [확인필요]로 추가를 제안한다 (lint)
 
 ## Modes (상세: modes.md)
-- inventory(L0 스크립트) · add(새 규칙 추가) · skill · agent · prompt · claude-md · rules · style · memory — 대상 종류로 고른다. 새 규칙을 넣는 요청이면 add 를 먼저 쓴다
+- inventory(L0 스크립트) · triage(규칙 전수 표) · add(새 규칙 추가) · skill · agent · prompt · claude-md · rules · style · memory — 대상 종류로 고른다. 새 규칙을 넣는 요청이면 add, 규칙이 많아 막막하면 triage 를 먼저 쓴다
 
 ## Output
-- 화면: templates/summary.md 형식 (HT-17)
-- 파일: docs/reports/{날짜}-harness-tidy/{약어}-규칙-검토.md · evals/{대상}/mapping.md · 정리본 · Eval 씨앗
+- 화면: templates/summary.md 형식 (HT-17) · 파일: docs/reports/{날짜}-harness-tidy/{약어}-규칙-검토.md · rules-triage.md · evals/{대상}/mapping.md · cold-read.md · 정리본 · Eval 씨앗
 
 ## Don't
 - 승인 전 대상 수정 · .bak 없는 덮어쓰기 · 정리 중 원본에 없는 규칙 추가(HT-05, 사용자 요청 규칙은 HT-19) · 기억으로 줄 번호 쓰기 · Eval 실행기 신규 작성
