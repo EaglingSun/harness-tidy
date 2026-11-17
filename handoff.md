@@ -12,7 +12,8 @@ harness-tidy 는 규칙 ID 기반 **씨앗 케이스**만 만든다. 케이스 �
 | skill | skill-creator (Description 최적화) | Eval 결과 확인 후 | "evals/{스킬명}/trigger-eval.json 을 검토해서 20개로 늘리고 description 최적화를 돌려줘." |
 | agent | /doctor prompt-audit | 정리본 작성 후 | `/doctor prompt-audit .claude/agents/{이름}.md` |
 | agent | Eval (수동 또는 스크립트) | 점검 후 | evals/agents/{이름}/ 의 케이스를 `@"{이름} (agent)"` 로 실행하고 규칙 ID 별로 채점 |
-| claude-md | claude-md-improver | 정리본 작성 후 | "정리한 CLAUDE.md 를 감사해줘." |
+| claude-md | /doctor (내장) | 정리본 작성 후 | `/doctor 정리한 CLAUDE.md 를 봐줘` — Check 2 로컬 · 체크인 중복, Check 3 코드에서 알 수 있는 내용, Check 4 skill · 하위 CLAUDE.md 이전. 같은 실행에서 나오는 권한 · auto mode · 버전 제안은 이 정리와 별개다 |
+| claude-md | claude-md-improver (선택) | /doctor 뒤, 설치돼 있을 때 | "정리한 CLAUDE.md 를 감사해줘." |
 | rules | skill-creator (Eval) | 정리본 확정 후 | "{대표 스킬} 스킬 Eval 에 evals/rules/{파일명}/evals.json 케이스를 포함해 돌려줘. 케이스는 {paths} 파일을 만지는 작업이어야 rule 이 로드된다." |
 | 전체 | inventory.py --changed-since · (선택) prompt-audit | 대상 하나를 머지한 뒤 | 회귀 점검: 먼저 스크립트로 바뀐 파일의 끊긴 참조·줄 초과를 보고, 모순 점검이 필요할 때만 prompt-audit (전역 파일을 바꿨으면 `~/.claude` 경로를 준다) |
 
@@ -35,11 +36,13 @@ harness-tidy 는 규칙 ID 기반 **씨앗 케이스**만 만든다. 케이스 �
 - 스킬 이름은 환경마다 접두어가 다르다 (예: anthropic-skills:skill-creator, /skill-creator). 사용 가능한 목록에서 이름으로 찾는다.
 - description 최적화는 `claude -p` 가 필요해 Claude Code 에서만 돌아간다.
 - `/doctor prompt-audit` 는 Claude Code 내장 기능이다 (v2.1.283 이상, 번들 스킬 /claude-api 가 켜져 있어야 함).
+- `/doctor` · `/doctor prompt-audit` 는 모델이 부를 수 없다(disableModelInvocation). 넘김 프롬프트를 보여 주고 사용자가 직접 입력한다.
+- `/skill-doctor` 는 내장 기능이고 기능 플래그로 꺼져 있을 수 있다. `claude -p "/skill-doctor"` 로 표를 받을 수 있다(Windows 명령은 modes.md inventory 0).
 
 ## 없을 때 설치 안내
 - skill-creator: Claude Code 에서 `/plugin install skill-creator@claude-plugins-official`
-- claude-md-management (claude-md-improver 포함): Claude Code 에서 `/plugin install claude-md-management@claude-plugins-official`
-- /doctor prompt-audit: Claude Code 업데이트
+- (선택) claude-md-management (claude-md-improver 포함): Claude Code 에서 `/plugin install claude-md-management@claude-plugins-official`
+- /doctor · /doctor prompt-audit · /skill-doctor: Claude Code 업데이트
 - 설치 후 Claude Code 를 재시작한다.
 
 ## 결과 받기

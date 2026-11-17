@@ -10,8 +10,9 @@
 
 ## 2. 함께 쓰는 공식 기능
 - skill-creator: Claude Code 에서 `/plugin install skill-creator@claude-plugins-official`
-- claude-md-management: Claude Code 에서 `/plugin install claude-md-management@claude-plugins-official`
-- /doctor prompt-audit: Claude Code 내장 (v2.1.283 이상)
+- (선택) claude-md-management: Claude Code 에서 `/plugin install claude-md-management@claude-plugins-official` — CLAUDE.md 넘김은 내장 /doctor 가 먼저다
+- /doctor · /doctor prompt-audit: Claude Code 내장 (prompt-audit 은 v2.1.283 이상). 모델이 부를 수 없어 사용자가 직접 입력한다. 전역까지 보려면 `/doctor prompt-audit ~/.claude`
+- /skill-doctor: Claude Code 내장 (기능 플래그로 꺼져 있을 수 있다). skill 별 사용 횟수 · 컨텍스트 비용 — inventory 가 Top 3 근거로 읽는다
 - 설치 후 Claude Code 재시작
 
 ## 3. (선택) 프로젝트 템플릿 배치
@@ -48,6 +49,7 @@ python .../inventory.py --coverage evals/deck-script                         # �
 python .../inventory.py --rules --include-user --out docs/reports/<날짜>-harness-tidy/rules-triage.md   # triage 표
 python .../inventory.py --triage-check docs/reports/<날짜>-harness-tidy/rules-triage.md   # 태그 · 결정 확정 여부 (미확정이면 exit 1)
 python .../inventory.py --terms .claude/skills/deck-script/SKILL.md          # 용어집 위반 (위반이면 exit 1)
+claude -p "/skill-doctor" > docs/reports/<날짜>-harness-tidy/skill-usage.txt # skill 사용 데이터 (Windows: claude.cmd · Git Bash 는 앞에 MSYS_NO_PATHCONV=1)
 ```
 - 잡는 것: 줄 초과 · ID 유무 · 긴 줄(줄글) 비율 · agent tools 생략 · description 없음 · 끊긴 @참조 · skill/command 이름 충돌 · commands 이전 후보 · MEMORY 한도 · hooks/permissions/MCP 목록
 - 비용 단계: L0 스크립트(기본) → L1 대상 주변(정리 때) → L2 전체 의미 비교(prompt-audit, 요청·정기 점검 때만)
@@ -68,5 +70,5 @@ python .../inventory.py --terms .claude/skills/deck-script/SKILL.md          # �
 - scripts/inventory.py — L0 목록 · L1 대상 주변 후보 · 증분 · triage 표(--rules · --triage-check) · 용어 lint(--terms)
 - modes.md — inventory · triage · add · skill · agent · prompt · claude-md · rules · style · memory 모드 절차
 - placement.md — 규칙을 둘 곳 (hook · CLAUDE.md · rule · style · skill · agent · MCP), 로드 판정, 중복 처리
-- handoff.md — 공식 기능(skill-creator · claude-md-improver · /doctor prompt-audit)으로 넘기는 절차
+- handoff.md — 공식 기능(skill-creator · /doctor · /doctor prompt-audit · /skill-doctor · 선택 claude-md-improver)으로 넘기는 절차
 - templates/ — summary(화면 요약) · mapping(매핑표) · review(검토 문서) · 규칙 포맷 · skill · agent · CLAUDE.md · 종료 리포트 · 구조 · why.md · evals.json(judge) · trigger-eval.json(트리거·위임) · hook · glossary(용어집) · cold-read(콜드 리드)

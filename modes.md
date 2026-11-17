@@ -3,16 +3,18 @@
 inventory · triage 를 뺀 정리 모드는 1단계(검토 문서) → 결정 → 2단계(정리본) → 콜드 리드(HT-21) · 용어 lint(HT-22) → 3단계(handoff, 승인 시) 순서다.
 - 콜드 리드: templates/cold-read.md 대로 정리본만 서브에이전트에 준다. 결과는 evals/{대상}/cold-read.md. 어긋남 · 모호는 검토 문서 [확인필요]로 되돌려 결정을 받고 정리본을 고친 뒤 다시 돌린다
 - 용어 lint: `python scripts/inventory.py --terms {정리본}` exit 0. 위반은 표준어로 고치고, 표준어가 없으면 용어집 추가안을 [확인필요]로 낸다
+- (선택) 공식 점검 입력: 사용자가 1단계 전에 `/doctor prompt-audit {대상 경로}` 를 돌렸으면 지적을 검토 문서 [확인필요]로 옮긴다 (handoff.md 결과 받기). 지적이 harness-tidy 기준(줄 수 상한 · 한 곳 · 한 줄 명령형)과 어긋나면 한쪽을 고르지 말고 둘 다 적어 묻는다
 
 ## Mode: inventory (대상이 없을 때, "하네스 정리" · "하네스 인벤토리")
 비용 단계: L0 목록(스크립트, 기본) → L1 대상 주변(대상 정리 때) → L2 전체 의미 비교(요청·정기 점검 때만)
 0. 먼저 `python scripts/inventory.py --out docs/reports/{날짜}-harness-tidy/inventory.md` 를 돌린다 (--include-user · --memory · --changed-since {커밋} 선택). Claude 는 이 표를 읽고, 본문은 Top 3 판단에 필요한 파일만 연다
+   - 사용 데이터: `/skill-doctor` 표를 `docs/reports/{날짜}-harness-tidy/skill-usage.txt` 로 저장한다. PowerShell `claude.cmd -p "/skill-doctor"` · Git Bash `MSYS_NO_PATHCONV=1 claude.cmd -p "/skill-doctor"`(빼면 `/skill-doctor` 가 경로로 바뀌어 실패) · macOS/Linux `claude -p "/skill-doctor"`. 실행할 수 없으면(기능 꺼짐 · 구버전) 결과에 「사용 데이터 없음」을 적는다
 1. 스크립트가 찾는 위치 (사용자 ~/.claude/ 와 프로젝트 .claude/)
    - 지시 계층(정리 대상): CLAUDE.md · CLAUDE.local.md · 하위 폴더 CLAUDE.md · AGENTS.md · .claude/rules/ · .claude/skills/ · .claude/commands/ · .claude/agents/ · .claude/output-styles/ · auto memory(~/.claude/projects/{프로젝트}/memory/MEMORY.md)
    - 실행·설정 계층(목록만): settings.json 의 hooks · permissions · outputStyle · agent, .mcp.json, 설치된 plugins
 2. 표 1행 = 파일 1개: 종류 · 경로 · 로드 조건(placement.md) · 줄 수 · 규칙 ID 유무 · 줄글 비율(상/중/하) · 트리거·위임 명확도(skill·agent) · 중복 후보
 3. 공유 관계: 같은 규칙이 여러 파일에 있는 묶음과, 어떤 rule 을 어떤 skill·agent 가 쓰는지 (상류 → 하류)
-4. 우선 정리 대상 Top 3 + 순서 (상류 먼저) + 선정 이유 1줄씩
+4. 우선 정리 대상 Top 3 + 순서 (상류 먼저) + 선정 이유 1줄씩. skill 은 사용 횟수 · 마지막 사용 · 컨텍스트 비용(skill-usage.txt)도 근거로 쓴다. 로드됐지만 한 번도 안 쓴 skill 은 정리 대상이 아니라 「끄기 후보」로 따로 적는다 (끌지는 사용자가 `/skills` · `/doctor` 에서 정한다)
 5. hook 전환 후보 (HT-16). L2(전체 의미 비교)는 사용자가 원할 때만 /doctor prompt-audit 또는 서브에이전트로 넘긴다 (handoff.md). prompt-audit 은 경로를 주지 않으면 프로젝트만 본다 — 전역까지 보려면 `/doctor prompt-audit ~/.claude` 를 따로 돌린다
 6. 결과: docs/reports/{날짜}-harness-tidy/inventory.md. 어떤 대상 파일도 고치지 않는다
 7. 다음 인벤토리는 `--changed-since {이번 커밋}` 으로 증분만 본다
@@ -72,7 +74,7 @@ inventory · triage 를 뺀 정리 모드는 1단계(검토 문서) → 결정 �
 ## Mode: claude-md (CLAUDE.md · CLAUDE.local.md · AGENTS.md)
 1. 줄마다 분류: G 규칙 유지 / Skill Routing / rule 로 이동 / output style 로 이동 / docs·스킬로 이동 / hook 전환 후보 / 삭제 후보
 2. 구조: templates/claude-md.md. 개인 설정은 CLAUDE.local.md, 팀 공유는 CLAUDE.md
-3. 결정 반영 → 이동 내역 · 줄 수 보고 → handoff(claude-md-improver)
+3. 결정 반영 → 이동 내역 · 줄 수 보고 → handoff(내장 /doctor, 설치돼 있으면 claude-md-improver)
 4. 정리본의 @ 참조 경로가 프로젝트에 없으면 이 스킬의 templates/ 에서 복사할지 묻는다
 
 ## Mode: rules (.claude/rules/*.md · ~/.claude/rules/*.md)
