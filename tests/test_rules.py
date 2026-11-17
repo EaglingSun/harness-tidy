@@ -62,11 +62,23 @@ class HintTest(unittest.TestCase):
     def hints(self, prefix):
         return " ".join(next(i for i in self.items if i["text"].startswith(prefix))["hints"])
 
-    def test_duplicate_and_conflict(self):
-        h = self.hints("커밋 전에 반드시")
-        self.assertIn("중복?", h)
-        self.assertIn("충돌?", h)
-        self.assertIn("충돌?", self.hints("PR-01"))
+    # 1.3.1: 충돌 판정은 /doctor prompt-audit 에 넘긴다. 스크립트는 충돌? 힌트를 달지 않는다
+    def test_no_conflict_hint_on_any_row(self):
+        self.assertEqual([i["row"] for i in self.items if any(h.startswith("충돌?") for h in i["hints"])], [])
+
+    def test_same_polarity_pair_is_still_duplicate(self):
+        self.assertIn("중복?", self.hints("커밋 전에 반드시"))
+
+    def test_opposite_polarity_pair_is_not_relabeled_duplicate(self):
+        positive = {i["row"] for i in self.items if "커밋 전에" in i["text"] and "않" not in i["text"]}
+        pr01 = next(i for i in self.items if i["text"].startswith("PR-01"))
+        self.assertEqual([h for h in pr01["hints"] if h.startswith("중복?") and h.split()[-1] in positive], [])
+
+    def test_triage_header_has_no_conflict_count(self):
+        d = harness()
+        md = inventory.triage_markdown(items_for(d), None, "test", d)
+        header = next(line for line in md.splitlines() if line.startswith("- 힌트"))
+        self.assertNotIn("충돌?", header)
 
     def test_one_off_vague_and_terms(self):
         self.assertIn("일회성?(2026-11-12)", self.hints("2026-11-12"))

@@ -461,21 +461,23 @@ def rules_triage(rows, root, glossary=(), dup=0.55, max_pairs=3):
                           "text": text, "ids": RULE_ID_RE.findall(text)[:2], "hints": []})
     for n, it in enumerate(items, 1):
         it["row"] = f"R{n:03d}"
-    # 충돌 = 부정어를 빼면 같은 문장인데 한쪽만 부정. 중복 = 같은 극성으로 비슷함. 행마다 유사도 상위 max_pairs 개만 남긴다
+    # 중복 = 같은 극성으로 비슷함. 행마다 유사도 상위 max_pairs 개만 남긴다
+    # 극성이 다른 쌍은 힌트를 달지 않는다 — 충돌 판정은 /doctor prompt-audit 에 넘긴다 (1.3.1, modes.md triage)
     grams = [_bigrams(NEG_STRIP_RE.sub("", it["text"])) for it in items]
     neg = [bool(NEG_RE.search(it["text"])) for it in items]
     pairs = {i: [] for i in range(len(items))}
     for i in range(len(items)):
         for j in range(i + 1, len(items)):
+            if neg[i] != neg[j]:
+                continue
             sim = similarity(grams[i], grams[j])
             if sim < dup:
                 continue
-            tag = "충돌?" if neg[i] != neg[j] else "중복?"
-            pairs[i].append((sim, tag, j))
-            pairs[j].append((sim, tag, i))
+            pairs[i].append((sim, j))
+            pairs[j].append((sim, i))
     for i, ps in pairs.items():
-        for sim, tag, j in sorted(ps, key=lambda x: -x[0])[:max_pairs]:
-            items[i]["hints"].append(f"{tag} {items[j]['row']}")
+        for sim, j in sorted(ps, key=lambda x: -x[0])[:max_pairs]:
+            items[i]["hints"].append(f"중복? {items[j]['row']}")
     for it in items:
         m = ONE_OFF_RE.search(it["text"])
         if m:
@@ -506,7 +508,8 @@ def triage_markdown(items, glossary_path, version, root):
     out = [
         f"# 규칙 전수 표 (triage, HT-20) — harness-tidy {version}", "",
         f"- 생성: {datetime.date.today().isoformat()} · 파일 {len(files)}개 · 규칙 후보 {len(items)}줄 · 용어집 {gshown}",
-        f"- 힌트(스크립트 추정): 중복? {count('중복?')} · 충돌? {count('충돌?')} · 일회성? {count('일회성?')} · 모호 {count('모호')} · 용어 {count('용어')}",
+        f"- 힌트(스크립트 추정): 중복? {count('중복?')} · 일회성? {count('일회성?')} · 모호 {count('모호')} · 용어 {count('용어')}",
+        "- 충돌 태그는 스크립트가 달지 않는다: `/doctor prompt-audit {범위}` 의 Group 2 지적(지시 파일 간 모순)을 해당 행에 옮긴다 (modes.md triage)",
         "- 태그: " + " · ".join(TRIAGE_TAGS) + " (여러 개는 ·) / 결정: " + " · ".join(CHANGE_KINDS)
         + " (묶음 · 이동은 비고에 상대 행 · 옮길 곳)",
         "- Claude 는 태그 · 결정을 제안하며 끝에 ? 를 붙인다. 사용자가 확정하면 ? 를 지운다. 규칙이 아닌 줄은 태그 칸에 `규칙 아님`, 결정 `유지`",
@@ -626,7 +629,7 @@ def main():
     ap.add_argument("--file", metavar="PATH", help="파일 하나의 전체 · 본문 줄 수만 출력 (wc -l 대신, OS 무관)")
     ap.add_argument("--version", action="store_true", help="harness-tidy 판 출력")
     ap.add_argument("--coverage", metavar="DIR", help="evals/{대상} 의 mapping.md 대비 evals.json 커버리지 확인")
-    ap.add_argument("--rules", action="store_true", help="triage(HT-20): 하네스 전체 규칙을 한 줄 단위 표로 (중복 · 충돌 · 일회성 · 모호 · 용어 힌트)")
+    ap.add_argument("--rules", action="store_true", help="triage(HT-20): 하네스 전체 규칙을 한 줄 단위 표로 (중복 · 일회성 · 모호 · 용어 힌트, 충돌은 /doctor prompt-audit)")
     ap.add_argument("--dup-threshold", type=float, default=0.55, help="--rules 중복 후보 유사도 (기본 0.55)")
     ap.add_argument("--triage-check", metavar="FILE", help="triage 표의 태그 · 결정이 모두 확정됐는지 (미확정이면 exit 1)")
     ap.add_argument("--terms", metavar="FILE", help="용어집 위반 lint (HT-22, 위반이면 exit 1)")
