@@ -13,18 +13,19 @@ inventory · triage 를 뺀 정리 모드는 1단계(검토 문서) → 결정 �
 2. 표 1행 = 파일 1개: 종류 · 경로 · 로드 조건(placement.md) · 줄 수 · 규칙 ID 유무 · 줄글 비율(상/중/하) · 트리거·위임 명확도(skill·agent) · 중복 후보
 3. 공유 관계: 같은 규칙이 여러 파일에 있는 묶음과, 어떤 rule 을 어떤 skill·agent 가 쓰는지 (상류 → 하류)
 4. 우선 정리 대상 Top 3 + 순서 (상류 먼저) + 선정 이유 1줄씩
-5. hook 전환 후보 (HT-16). L2(전체 의미 비교)는 사용자가 원할 때만 /doctor prompt-audit 또는 서브에이전트로 넘긴다 (handoff.md)
+5. hook 전환 후보 (HT-16). L2(전체 의미 비교)는 사용자가 원할 때만 /doctor prompt-audit 또는 서브에이전트로 넘긴다 (handoff.md). prompt-audit 은 경로를 주지 않으면 프로젝트만 본다 — 전역까지 보려면 `/doctor prompt-audit ~/.claude` 를 따로 돌린다
 6. 결과: docs/reports/{날짜}-harness-tidy/inventory.md. 어떤 대상 파일도 고치지 않는다
 7. 다음 인벤토리는 `--changed-since {이번 커밋}` 으로 증분만 본다
 
 ## Mode: triage (규칙 전수 표 — "규칙 전수 정리" · "전역 규칙 정리" · "규칙이 너무 많아")
 대상을 고르기 전에 규칙 전체를 한 표로 본다 (HT-20). 정리본을 만들지 않고, 어떤 파일도 고치지 않는다
-1. `python scripts/inventory.py --rules --include-user --out docs/reports/{날짜}-harness-tidy/rules-triage.md` (프로젝트만이면 --include-user 빼기 · 증분은 --changed-since). 규칙 한 줄 = 1행(R001…), 힌트: 중복? · 충돌? · 일회성? · 모호 · 용어
+1. `python scripts/inventory.py --rules --include-user --out docs/reports/{날짜}-harness-tidy/rules-triage.md` (프로젝트만이면 --include-user 빼기 · 증분은 --changed-since). 규칙 한 줄 = 1행(R001…), 힌트: 중복? · 일회성? · 모호 · 용어. 스크립트는 충돌 힌트를 달지 않는다
+1-1. 충돌 점검은 공식 기능에 넘긴다: 사용자가 `/doctor prompt-audit`(프로젝트) · `/doctor prompt-audit ~/.claude`(전역 — 경로를 줘야 범위에 든다)를 돌리면, Group 2 지적(지시 파일 간 모순)을 해당 행의 태그 `충돌` 로 옮긴다. 돌리지 않았거나 쓸 수 없으면(v2.1.283 미만 · /claude-api 꺼짐) triage 요약에 「충돌 점검 안 함」을 적는다
 2. Claude 가 행마다 태그 · 결정 제안을 채운다. 끝에 ? 를 붙인다 (예: `일회성?` · `뺄?`)
    - 기준: 지금도 지켜야 하는 판단 기준 → 대개 유지 · 수정
    - 일회성: 그때 한 번 한 지시가 굳은 것(날짜 · 특정 PR · 이번 작업) → 대개 뺄
    - 중복: 같은 뜻이 여러 곳 → 한 곳만 남기고 나머지는 묶음(비고: 남길 행) 또는 뺄 (HT-15, placement.md)
-   - 충돌: 서로 반대 → 사용자에게 어느 쪽인지 묻는다. 제안 없이 `충돌` · `수정?`
+   - 충돌: 1-1 의 prompt-audit 지적으로만 붙인다. 사용자에게 어느 쪽인지 묻는다. 제안 없이 `충돌` · `수정?`
    - 모호: 판정 불가 표현 → 수정(비고: 고칠 방향). 규칙이 아닌 줄은 태그 `규칙 아님` · 결정 `유지`
 3. 화면에는 templates/summary.md 의 triage 요약만 낸다 (HT-17): 충돌 → 일회성 → 중복 → 모호 순, 기준 · 유지는 개수만
 4. 사용자 답("승인" 또는 "R014 유지, R020 뺄 …")으로 ? 를 지운다. `--triage-check` 가 exit 0 일 때까지 반복한다

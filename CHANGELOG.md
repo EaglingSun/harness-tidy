@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.1
+- triage(HT-20): 스크립트의 `충돌?` 힌트를 없앴다. 유사도 + 부정어 유무로 정한 충돌 힌트는 실제 하네스에서 오탐이 많았고, 같은 일을 `/doctor prompt-audit`(Group 2 지시 파일 간 모순)이 override · 신구 판정까지 넣어 한다. 극성이 다른 쌍은 이제 힌트를 달지 않는다(`중복?` 으로 바꿔 부르지 않는다)
+- 공식 대응: 있음 — 충돌 판정은 `/doctor prompt-audit` 결과를 triage 표의 `충돌` 태그로 옮긴다(modes.md triage 1-1). 못 쓰면 요약에 「충돌 점검 안 함」
+- prompt-audit 넘김 안내에 범위를 적었다: 프로젝트 `/doctor prompt-audit` · 전역 `/doctor prompt-audit ~/.claude`(경로를 줘야 전역이 범위에 든다) — handoff.md · modes.md inventory
+- 바뀐 것: inventory.py `rules_triage()` · triage 표 머리말 · summary.md triage 요약 · SKILL.md HT-20 한 구절 · tests/test_rules.py(충돌 시험을 「충돌? 없음 · 같은 극성은 중복? · 다른 극성은 중복? 아님 · 머리말에 충돌? 없음」 4건으로 교체). `중복?` 의 행당 상위 3칸에서 충돌 쌍이 빠지므로 `중복?` 행 수는 1.3.0 보다 늘 수 있다. 그 밖의 모드 · 규칙은 1.3.0 과 같다
+
 ## 1.3.0
 - HT-20 추가 · modes.md 에 triage 모드(규칙 전수 표): `inventory.py --rules` 가 하네스 전체를 규칙 한 줄 = 1행(R001…)으로 뽑고 힌트(중복? · 충돌? · 일회성? · 모호 · 용어)를 단다. 태그(기준 · 일회성 · 중복 · 충돌 · 모호)와 결정(유지 · 수정 · 묶음 · 이동 · 뺄)을 받고 `--triage-check` exit 0 뒤 대상별 모드로 넘긴다. 대상별 검토 문서 결정 칸은 triage 결정으로 미리 채운다
 - HT-21 추가 · templates/cold-read.md: 2단계 정리본을 정리 맥락 없는 서브에이전트에 주고 (judge) 규칙마다 해석 · 경계 사례를 받아 원문 · why 와 대조. 어긋남 · 모호 0 일 때만 넘긴다

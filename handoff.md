@@ -6,14 +6,15 @@ harness-tidy 는 규칙 ID 기반 **씨앗 케이스**만 만든다. 케이스 �
 ## 넘김 표
 | 모드 | 넘길 곳 | 언제 | 넘김 프롬프트 |
 |---|---|---|---|
-| inventory (L2, 선택) | /doctor prompt-audit | 사용자가 전체 점검을 원할 때 · 월 1회 · 큰 개편 전 | `/doctor prompt-audit` (하네스 전체: 오래된 지시 · 없는 파일 참조 · 파일 간 모순). 끊긴 @참조 · 이름 충돌은 L0 스크립트가 이미 잡는다 |
+| inventory (L2, 선택) | /doctor prompt-audit | 사용자가 전체 점검을 원할 때 · 월 1회 · 큰 개편 전 | 프로젝트: `/doctor prompt-audit` · 전역: `/doctor prompt-audit ~/.claude` (경로를 줘야 전역이 범위에 든다. 오래된 지시 · 없는 파일 참조 · 파일 간 모순). 끊긴 @참조 · 이름 충돌은 L0 스크립트가 이미 잡는다 |
+| triage | /doctor prompt-audit | 태그를 받기 전 | 위와 같은 범위로 돌리고, Group 2 지적을 triage 표 행의 `충돌` 태그로 옮긴다 (modes.md triage 1-1) |
 | skill | skill-creator (Eval) | 2단계 작성 + 매핑표 승인 + 커버리지 100% 후 | "{스킬명} 스킬을 개선 중이야. 기준선은 원본(SKILL.md.bak 또는 git 태그 {기준선}) 스냅샷, 비교 대상은 정리본. 두 쪽 모두 evals/{스킬명}/evals.json 의 같은 케이스로 돌리고, expected_output 의 [규칙 ID][매핑 행] 을 assertion 이름에 유지해줘. 이동 케이스는 옮긴 rule 이 로드되는 경로를 실제로 만져야 한다." |
 | skill | skill-creator (Description 최적화) | Eval 결과 확인 후 | "evals/{스킬명}/trigger-eval.json 을 검토해서 20개로 늘리고 description 최적화를 돌려줘." |
 | agent | /doctor prompt-audit | 정리본 작성 후 | `/doctor prompt-audit .claude/agents/{이름}.md` |
 | agent | Eval (수동 또는 스크립트) | 점검 후 | evals/agents/{이름}/ 의 케이스를 `@"{이름} (agent)"` 로 실행하고 규칙 ID 별로 채점 |
 | claude-md | claude-md-improver | 정리본 작성 후 | "정리한 CLAUDE.md 를 감사해줘." |
 | rules | skill-creator (Eval) | 정리본 확정 후 | "{대표 스킬} 스킬 Eval 에 evals/rules/{파일명}/evals.json 케이스를 포함해 돌려줘. 케이스는 {paths} 파일을 만지는 작업이어야 rule 이 로드된다." |
-| 전체 | inventory.py --changed-since · (선택) prompt-audit | 대상 하나를 머지한 뒤 | 회귀 점검: 먼저 스크립트로 바뀐 파일의 끊긴 참조·줄 초과를 보고, 모순 점검이 필요할 때만 prompt-audit |
+| 전체 | inventory.py --changed-since · (선택) prompt-audit | 대상 하나를 머지한 뒤 | 회귀 점검: 먼저 스크립트로 바뀐 파일의 끊긴 참조·줄 초과를 보고, 모순 점검이 필요할 때만 prompt-audit (전역 파일을 바꿨으면 `~/.claude` 경로를 준다) |
 
 ## 넘기기 전 점검
 - [ ] evals.json — mapping.md 모든 행에 케이스 또는 `없음(사유)` (`inventory.py --coverage evals/{대상}` 이 exit 0 — 커버리지 100% · ID 없음 0 · 변경 유형 오류 0)
