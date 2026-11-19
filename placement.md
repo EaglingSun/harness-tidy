@@ -21,6 +21,7 @@
 |---|---|---|
 | CLAUDE.md · CLAUDE.local.md (작업 폴더와 상위) | 세션 시작, 항상 | 매 요청 |
 | 하위 폴더의 CLAUDE.md | 그 폴더의 파일을 읽거나 고칠 때 | 로드 후 매 요청 |
+| Skill 폴더 안 CLAUDE.md · .claude/CLAUDE.md | 그 Skill 파일을 읽을 때 (프로젝트 전용 설치에서 실측) | 로드 후 매 요청 |
 | .claude/rules/*.md (paths 없음) | 세션 시작, 항상 | 매 요청 |
 | .claude/rules/*.md (paths 있음) | paths 에 맞는 파일을 읽거나 고칠 때 | 로드 후 매 요청 |
 | output style | 선택된 1개가 세션 내내 | 매 요청 |
@@ -31,6 +32,7 @@
 | 그 밖의 문서 | @ 참조되거나 읽으라고 지시할 때만 | 그때만 |
 
 ## 중복을 발견했을 때
+- 어긋나지 않고 작동하는 중복(같은 계약을 두 파일에 적은 것 등)은 정리 대상이 아니다 → 결정 칸 `유지?`. 아래 처리는 `/doctor prompt-audit` Group 2 가 어긋남을 짚었거나 사용자가 묶기로 정했을 때다 (HTD-02 · keep-list 8)
 - 같은 맥락에서 **자동 로드**되는 곳에 이미 있다 → 이 대상에서 빼고, Refs 에 "{ID}는 {파일} 소관" 1줄
 - agent 본문이 skill 내용을 복사했다 → 본문에서 빼고 frontmatter `skills:` 로 preload
 - **자동 로드되지 않는** 곳에만 있다 → 그 문서를 기준으로 삼아 "읽는다" 1줄(ID 는 그 문서 쪽), 또는 남기고 그 문서를 다음 정리 대상으로 표시
@@ -40,4 +42,4 @@
 - 경로 rule · 하위 CLAUDE.md 는 파일을 만질 때 로드된다 → skill·agent Procedure 1 = "대상 파일을 먼저 읽는다"
 - CLAUDE.md · rule · output style 은 지시라서 강제되지 않는다 → 막아야 하면 hook (순서 0). hook 도 꺼져 있거나(disableAllHooks) 실패하면(exit 0 · 2 밖) 대개 그대로 진행된다 → 확실한 허용 · 차단은 permissions
 - 상위 파일(CLAUDE.md · rule)을 바꾸면 하류 skill·agent 모두에 영향 → 하류 반영 표로 확인한다
-- 공식 권장은 CLAUDE.md 파일당 200줄 아래다. 이 스킬은 정리 목적상 더 엄격한 50줄을 쓴다
+- 공식 권장은 CLAUDE.md 파일당 200줄 아래다. 이 스킬의 50줄은 참고 기준이다 — 넘어도 줄 수만으로 줄이지 않는다 (HT-09)

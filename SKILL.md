@@ -15,17 +15,17 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - HT-04 한 줄에 규칙이 여러 개면 나누고, 검사 방식·대상이 같은 규칙은 한 줄로 묶는다. 나누고 묶은 내역을 남긴다
 - HT-05 정리 중에는 원본에 없는 규칙을 추가하지 않는다. 표현을 바꾸면 원문을 함께 남긴다. 사용자가 요청한 신규 규칙은 add 모드(HT-19)로 다룬다
 - HT-06 매핑되지 않은 원본 문장은 [확인필요]로 표시하고 묻는다
-- HT-07 규칙(행동을 지시 · 금지하는 문장 — Rules 절 밖 · procedure.md · pitfalls.md 로 옮긴 것 포함)은 ID({약어}-NN)를 붙인 한 줄 명령형. 옮겨도 ID 는 그대로 둔다. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …), 예외는 (예외: …) 또는 why.md#{ID} 로 보존한다
+- HT-07 규칙(행동을 지시 · 금지하는 문장 — Rules 절 밖 · procedure.md · pitfalls.md 로 옮긴 것 포함)은 ID({약어}-NN)를 붙인 한 줄 명령형. 옮겨도 ID 는 그대로 둔다. 금지어 "~하면 좋다" "가능하면" "적절히". 원본의 이유는 (이유: …), 예외는 (예외: …) 또는 why.md#{ID} 로 보존하고, 날짜 · 회차 · 건수 같은 경위는 why.md#{ID} 출처 칸으로 옮긴다
 - HT-08 정규식·카운트로 판정 가능한 규칙은 (lint), 나머지는 (judge)
-- HT-09 줄 수는 `python scripts/inventory.py --file {경로}` 의 본문 줄 수로 잰다. 상한: skill·agent·prompt 40 · CLAUDE.md 50 · rule 30. 넘으면 묶기 → 이동 → 외부 참조 순으로 줄인다
+- HT-09 줄 수는 `python scripts/inventory.py --file {경로}` 의 본문 줄 수로 잰다. 참고 기준: skill·agent·prompt 40 · CLAUDE.md 50 · rule 30. 넘으면 검토 문서에 참고로 적고, 줄 수만으로 빼거나 줄이지 않는다. 줄이기로 하면 묶기 → 이동 → 외부 참조 순이다
 - HT-10 Eval 씨앗은 정리본이 아니라 mapping.md 전체 행(유지·수정·묶음·이동·뺄)에서 만든다. 이동은 옮긴 곳이 로드되는 경로를 만지는 케이스, 뺄은 사유를 적고 필요 시 케이스. (lint) → forbidden.txt · (judge) → evals.json · 트리거 → trigger-eval.json. 커버리지 · 새 ID 는 inventory.py --coverage 로 확인하고 exit 0 일 때만 넘긴다
 - HT-11 한 번에 한 대상만 처리한다. 다른 대상과 규칙을 공유하면 상류(CLAUDE.md · rule)부터 정리하자고 제안한다
 - HT-12 Eval 실행·전후 비교·트리거 최적화·전체 점검은 handoff.md 대로 공식 기능에 넘긴다. 공식 점검 결과(/doctor prompt-audit 지적 · /skill-doctor 사용 데이터)는 다시 만들지 않고 1단계 입력으로 받는다
 - HT-13 넘기기 전에 승인을 받는다. 넘길 기능이 없으면 설치 안내와 넘김 프롬프트만 출력하고 멈춘다
 - HT-14 1단계에서 `inventory.py --near {대상}` 으로 주변 후보(L1)를 뽑고 그 후보만 읽어, 규칙마다 바깥 위치(경로:줄)와 자동 로드 여부를 적는다. 전체 의미 비교(L2)는 요청 시에만
-- HT-15 한 규칙은 한 곳에만 둔다. 둘 곳은 placement.md 로 정하고, 같은 맥락에서 자동 로드되는 곳에 이미 있으면 빼고 참조(agent 는 skills: preload)로 바꾼다
+- HT-15 한 규칙은 한 곳에만 둔다. 둘 곳은 placement.md 로 정하고, 같은 맥락에서 자동 로드되는 곳에 이미 있으면 빼고 참조(agent 는 skills: preload)로 바꾼다 (예외: 서로 어긋나지 않고 작동하는 중복은 빼자고 하지 않고 `유지?` 로 묻는다 — prompt-audit keep-list 8)
 - HT-16 매번 반드시 지켜져야 하는 (lint) 규칙은 hook 전환 후보로 표시한다 (지시는 요청일 뿐 보장이 아니다)
-- HT-17 화면 출력은 단계마다 20줄 이내 요약(templates/summary.md)이다. 결정이 필요한 항목만 나열하고 유지는 개수만, 전체 표는 파일로 둔다
+- HT-17 화면 출력은 단계마다 templates/summary.md 형식의 요약이다. 결정이 필요한 항목만 나열하고 유지는 개수만, 전체 표는 파일로 둔다
 - HT-18 매핑표는 evals/{대상}/mapping.md 에 저장하고, 행마다 변경 유형(유지·수정·묶음·이동·뺄)을 적는다. 뺄·묶음 행도 지우지 않는다
 - HT-19 사용자가 새 기준·규칙을 넣어 달라고 하면 add 모드로 처리한다. 인벤토리 → placement.md 배치 판정(전역·프로젝트 포함) → 중복·충돌 확인(HT-15) → 파일·줄·문안 제안 → 승인 뒤 반영. 승인 전에는 대상 파일을 고치지 않는다
 - HT-20 규칙이 많아 대상을 고르기 어렵거나 전역 규칙을 한꺼번에 정리하려면 triage 모드로 `inventory.py --rules` 표(규칙 한 줄 = 1행)를 만들고, 태그(기준·일회성·중복·충돌·모호)와 결정을 받는다. 충돌 태그는 스크립트가 아니라 /doctor prompt-audit 지적으로 채운다. `--triage-check` 가 exit 0 이면 상류부터 대상별 모드로 넘긴다. triage 중에는 어떤 파일도 고치지 않는다
@@ -42,4 +42,4 @@ description: Claude Code 하네스(CLAUDE.md · rules · skills · commands · s
 - 승인 전 대상 수정 · .bak 없는 덮어쓰기 · 정리 중 원본에 없는 규칙 추가(HT-05, 사용자 요청 규칙은 HT-19) · 기억으로 줄 번호 쓰기 · Eval 실행기 신규 작성
 
 ## Refs
-- modes.md · placement.md · handoff.md · templates/ · scripts/inventory.py · VERSION · CHANGELOG.md
+- modes.md · placement.md · handoff.md · why.md · templates/ · scripts/inventory.py · VERSION · CHANGELOG.md

@@ -51,7 +51,7 @@ python .../inventory.py --triage-check docs/reports/<날짜>-harness-tidy/rules-
 python .../inventory.py --terms .claude/skills/deck-script/SKILL.md          # 용어집 위반 (위반이면 exit 1)
 claude -p "/skill-doctor" > docs/reports/<날짜>-harness-tidy/skill-usage.txt # skill 사용 데이터 (Windows: claude.cmd · Git Bash 는 앞에 MSYS_NO_PATHCONV=1)
 ```
-- 잡는 것: 줄 초과 · ID 유무 · 긴 줄(줄글) 비율 · agent tools 생략 · description 없음 · 끊긴 @참조 · skill/command 이름 충돌 · commands 이전 후보 · MEMORY 한도 · hooks/permissions/MCP 목록
+- 잡는 것: 줄 수 참고(줄이는 근거가 아니다) · ID 유무 · 긴 줄(줄글) 비율 · agent tools 생략 · description 없음 · 끊긴 @참조 · skill/command 이름 충돌 · commands 이전 후보 · MEMORY 한도 · hooks/permissions/MCP 목록
 - 비용 단계: L0 스크립트(기본) → L1 대상 주변(정리 때) → L2 전체 의미 비교(prompt-audit, 요청·정기 점검 때만)
 - 검토 문서를 다시 돌릴 때는 "결정 칸은 유지"를 붙인다
 
