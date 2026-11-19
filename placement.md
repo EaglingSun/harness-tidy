@@ -40,4 +40,4 @@
 - 경로 rule · 하위 CLAUDE.md 는 파일을 만질 때 로드된다 → skill·agent Procedure 1 = "대상 파일을 먼저 읽는다"
 - CLAUDE.md · rule · output style 은 지시라서 강제되지 않는다 → 막아야 하면 hook (순서 0). hook 도 꺼져 있거나(disableAllHooks) 실패하면(exit 0 · 2 밖) 대개 그대로 진행된다 → 확실한 허용 · 차단은 permissions
 - 상위 파일(CLAUDE.md · rule)을 바꾸면 하류 skill·agent 모두에 영향 → 하류 반영 표로 확인한다
-- 공식 권장은 CLAUDE.md 파일당 200줄 아래다. 이 스킬은 정리 목적상 더 엄격한 50줄을 쓴다
+- 공식 권장은 CLAUDE.md 파일당 200줄 아래다. 이 스킬의 50줄은 참고 기준이다 — 넘어도 줄 수만으로 줄이지 않는다 (HT-09)

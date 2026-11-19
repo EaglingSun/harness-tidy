@@ -183,7 +183,7 @@ def analyze(kind, scope, path, root):
     flags = []
     limit = LIMITS.get(kind)
     if limit and len(body_lines) > limit:
-        flags.append(f"줄 초과({len(body_lines)}>{limit})")
+        flags.append(f"줄 수 참고({len(body_lines)}>{limit})")
     if kind == "agent" and not fm.get("tools"):
         flags.append("tools 생략=전부 상속")
     if kind == "command":

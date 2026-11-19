@@ -15,7 +15,7 @@ harness-tidy 는 규칙 ID 기반 **씨앗 케이스**만 만든다. 케이스 �
 | claude-md | /doctor (내장) | 정리본 작성 후 | `/doctor 정리한 CLAUDE.md 를 봐줘` — Check 2 로컬 · 체크인 중복, Check 3 코드에서 알 수 있는 내용, Check 4 skill · 하위 CLAUDE.md 이전. 같은 실행에서 나오는 권한 · auto mode · 버전 제안은 이 정리와 별개다 |
 | claude-md | claude-md-improver (선택) | /doctor 뒤, 설치돼 있을 때 | "정리한 CLAUDE.md 를 감사해줘." |
 | rules | skill-creator (Eval) | 정리본 확정 후 | "{대표 스킬} 스킬 Eval 에 evals/rules/{파일명}/evals.json 케이스를 포함해 돌려줘. 케이스는 {paths} 파일을 만지는 작업이어야 rule 이 로드된다." |
-| 전체 | inventory.py --changed-since · (선택) prompt-audit | 대상 하나를 머지한 뒤 | 회귀 점검: 먼저 스크립트로 바뀐 파일의 끊긴 참조·줄 초과를 보고, 모순 점검이 필요할 때만 prompt-audit (전역 파일을 바꿨으면 `~/.claude` 경로를 준다) |
+| 전체 | inventory.py --changed-since · (선택) prompt-audit | 대상 하나를 머지한 뒤 | 회귀 점검: 먼저 스크립트로 바뀐 파일의 끊긴 참조 · 줄 수 참고를 보고, 모순 점검이 필요할 때만 prompt-audit (전역 파일을 바꿨으면 `~/.claude` 경로를 준다) |
 
 ## 넘기기 전 점검
 - [ ] evals.json — mapping.md 모든 행에 케이스 또는 `없음(사유)` (`inventory.py --coverage evals/{대상}` 이 exit 0 — 커버리지 100% · ID 없음 0 · 변경 유형 오류 0)
