@@ -25,8 +25,8 @@ inventory · triage 를 뺀 정리 모드는 1단계(검토 문서) → 결정 �
 1-1. 충돌 점검은 공식 기능에 넘긴다: 사용자가 `/doctor prompt-audit`(프로젝트) · `/doctor prompt-audit ~/.claude`(전역 — 경로를 줘야 범위에 든다)를 돌리면, Group 2 지적(지시 파일 간 모순)을 해당 행의 태그 `충돌` 로 옮긴다. 돌리지 않았거나 쓸 수 없으면(v2.1.283 미만 · /claude-api 꺼짐) triage 요약에 「충돌 점검 안 함」을 적는다
 2. Claude 가 행마다 태그 · 결정 제안을 채운다. 끝에 ? 를 붙인다 (예: `일회성?` · `뺄?`)
    - 기준: 지금도 지켜야 하는 판단 기준 → 대개 유지 · 수정
-   - 일회성: 그때 한 번 한 지시가 굳은 것(날짜 · 특정 PR · 이번 작업) → 대개 뺄
-   - 중복: 같은 뜻이 여러 곳 → 한 곳만 남기고 나머지는 묶음(비고: 남길 행) 또는 뺄 (HT-15, placement.md)
+   - 일회성: 그때 한 번 한 지시가 굳은 것(날짜 · 특정 PR · 이번 작업) → 대개 뺄. 날짜가 규칙의 경위 꼬리표일 뿐이면 일회성이 아니라 기준 → 경위만 why 로 (HT-07)
+   - 중복: 같은 뜻이 여러 곳 → 한 곳만 남기고 나머지는 묶음(비고: 남길 행) 또는 뺄 (HT-15, placement.md). 단 prompt-audit 모순 지적이 없는 작동 중복은 `유지?` (HT-15 예외)
    - 충돌: 1-1 의 prompt-audit 지적으로만 붙인다. 사용자에게 어느 쪽인지 묻는다. 제안 없이 `충돌` · `수정?`
    - 모호: 판정 불가 표현 → 수정(비고: 고칠 방향). 규칙이 아닌 줄은 태그 `규칙 아님` · 결정 `유지`
 3. 화면에는 templates/summary.md 의 triage 요약만 낸다 (HT-17): 충돌 → 일회성 → 중복 → 모호 순, 기준 · 유지는 개수만
@@ -58,8 +58,8 @@ inventory · triage 를 뺀 정리 모드는 1단계(검토 문서) → 결정 �
 ## Mode: agent (.claude/agents/{이름}.md)
 1. 진단: description(위임 조건) 명확도 · tools 지정 여부(생략 = 전부 상속 → 최소 권한 점검) · model · 본문(system prompt)의 줄글 · Output(메인으로 돌려줄 요약 형식) 유무 · 바깥 중복
 2. frontmatter 필드명은 정확히 쓴다 (오타는 조용히 무시된다)
-3. 본문에 스킬 내용이 복사돼 있으면 `skills:` preload 로 바꾸자고 제안한다 (HT-15)
-4. CLAUDE.md 는 에이전트에도 기본 로드된다(omitClaudeMd 제외) → CLAUDE.md 와 겹치는 규칙은 뺀다
+3. 본문에 스킬 내용이 복사돼 있으면 `skills:` preload 로 바꾸자고 제안한다 (HT-15) (어긋남 없는 복사는 `유지?` — HT-15 예외)
+4. CLAUDE.md 는 에이전트에도 기본 로드된다(omitClaudeMd 제외) → CLAUDE.md 와 겹치는 규칙은 어긋나면 빼고, 어긋나지 않으면 `유지?` 로 묻는다 (HT-15)
 5. 구조: templates/agent.md. Procedure · Output · Don't 의 지시 · 금지 문장도 ID 를 붙인다 (HT-07)
 6. Eval: 위임 → trigger-eval.json (should_trigger = 자동 위임 여부) · 동작 → evals.json (prompt 에 `@"{이름} (agent)"` 로 명시 호출)
 7. 결정 반영 → 정리본 · 매핑표 · 줄 수 → handoff(/doctor prompt-audit, Eval 실행)
